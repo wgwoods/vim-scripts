@@ -12,56 +12,86 @@ endif
 syn case match
 syn sync fromstart
 
-" basic data types
+
+"----- basic data types and patterns ----------------------
 syn match   yumError    contained '\S.*'
 syn match   yumVar      /\$\%(basearch\|releasever\|arch\|uuid\|YUM\d\)/
 syn match   yumOtherVar /\$\i\+/
-syn match   yumComment  /^#.*$/ containedin=ALL
-syn keyword yumBool     contained 0 1
-syn match   yumInt      contained /\d\+/
-syn match   yumFilename contained '/[^ *]\+' contains=yumVar
-syn match   yumGlob     contained 'glob:[^ ]\+' contains=yumVar
-syn match   yumFileList contained '.*' contains=yumFileName,yumGlob
-syn match   yumURL      contained '\<\%(file\|https\=\|ftp\|media\)://\S\+' contains=yumVar
-syn match   yumDuration contained /\%(\d\+[dhm]\?\|never\)/
+syn match   yumComment  /^[#;].*$/ containedin=ALL
+" single items
+syn match   yumItem     contained /\S\+/                                                    skipwhite nextgroup=yumError
+syn keyword yumBool     contained 0 1 yes no true false True False                          skipwhite nextgroup=yumError
+syn match   yumInt      contained /\d\+/                                                    skipwhite nextgroup=yumError
+syn match   yumDuration contained /\%(\d\+[dhm]\?\|never\)/                                 skipwhite nextgroup=yumError
+" these things could be in lists
+syn match   yumURL      contained '\<\%(file\|https\=\|ftp\|media\)://[^ ,]\+'  contains=yumVar
+syn match   yumFile     contained /\%(\<glob:[^ ,]\+\|\/[^ ,*?]\+\)/            contains=yumVar,yumGlobSyms
+syn match   yumGlobSyms contained /[*?]/
+" list items
+syn region  yumFileList contained start=// end=/\n\S/me=e-2 contains=yumComma,yumFile,yumError
+syn region  yumURLList  contained start=// end=/\n\S/me=e-2 contains=yumComma,yumUrl,yumError
+syn region  yumList     contained start=// end=/\n\S/me=e-2 contains=yumComma
+syn match   yumComma    contained /,/
+"----------------------------------------------------------
 
-" stuff common to main & repo config sections
-syn match   yumKey      contained /^\%(keepalive\|sslverify\)/ nextgroup=yumBool,yumError
+
+"---- stuff common to main & repo config sections ---------
+"TODO: this section isn't complete
+syn match   yumKey      contained /^\%(keepalive\|sslverify\|gpgcheck\)\s*=\s*/ nextgroup=yumBool
+syn match   yumKey      contained /^\%(retries\|timeout\)\s*=\s*/ nextgroup=yumInt,yumError
 syn match   yumKey      contained /^\%(metadata_expire\|mirrorlist_expire\)\s*=\s*/ nextgroup=yumDuration,yumError
+syn match   yumKey      contained /^\%(exclude\)\s*=\s*/ nextgroup=yumList
+"----------------------------------------------------------
 
-" [reponame] section
+
+"---- [reponame] section items ----------------------------
 syn region  repoRegion  matchgroup=yumHeader start=/^\[\S\+\]/ end=/^\[/me=e-2 contains=repoKey,yumKey,yumVar
-syn match   repoKey     contained /^\(name\|repositoryid\)\s*=/
-syn match   repoKey     contained /^\%(enabled\|gpgcheck\|repo_gpgcheck\|enablegroups\|skip_if_unavailable\)\s*=\s*/ nextgroup=yumBool,yumError
-syn match   repoKey     contained /^\%(mirrorlist\|gpgkey\|gpgcakey\)\s*=\s*/ nextgroup=yumURL,yumError
-" FIXME URL lists
-syn match   repoKey     contained /^\%(baseurl\)\s*=\s*/ nextgroup=yumURL,yumError
-syn match   repoKey     contained /^failovermethod\s*=\s*/ nextgroup=repoFailover,yumError
+syn match   repoKey     contained /^name\s*=\s*/
+syn match   repoKey     contained /^\(repositoryid\)\s*=\s*/ nextgroup=yumItem
+syn match   repoKey     contained /^\%(enabled\|repo_gpgcheck\|enablegroups\|skip_if_unavailable\)\s*=\s*/ nextgroup=yumBool
+syn match   repoKey     contained /^\%(mirrorlist\|gpgcakey\)\s*=\s*/ nextgroup=yumUrl,yumError
+syn match   repoKey     contained /^\%(baseurl\|gpgkey\)\s*=\s*/ nextgroup=yumURLList
+syn match   repoKey     contained /^cost\s*=\s*/ nextgroup=yumInt
+syn match   repoKey     contained /^failovermethod\s*=\s*/ nextgroup=repoFailover
+syn keyword repoFailover    contained priority roundrobin skipwhite nextgroup=yumError
+"----------------------------------------------------------
 
-syn keyword repoFailover    contained priority roundrobin
 
-" [main] section
+"---- [main] section --------------------------------------
+"TODO: this section isn't complete
 syn region  mainRegion  matchgroup=yumHeader start=/^\[main\]/ end=/^\[/me=e-2 contains=mainKey,yumKey,yumVar
-syn match   mainKey     contained /^\%(keepcache\|protected_multilib\|\%(local_\|repo_\)\=gpgcheck\|skip_broken\|assumeyes\|assumeno\|alwaysprompt\|tolerant\|exactarch\|showdupesfromrepos\|obsoletes\|overwrite_groups\|groupremove_leaf_only\|enable_group_conditionals\|diskspacecheck\|history_record\|plugins\|clean_requirements_on_remove\)\s*=\s*/ nextgroup=yumBool,yumError
-syn match   mainKey     contained /^\%(cachedir\|persistdir\|reposdir\|logfile\)\s*=\s*/ nextgroup=yumFilename,yumError
-syn match   mainKey     contained /^\%(debuglevel\|installonly_limit\)\s*=\s*/ nextgroup=yumInt,yumError
-" FIXME file lists (e.g. repodir)
-" TODO finish this
+syn match   mainKey     contained /^\%(installonlypkgs\|distroverpkg\|commands\)\s*=\s/
+syn match   mainKey     contained /^\%(keepcache\|protected_multilib\|\%(local_\|repo_\)\=gpgcheck\|skip_broken\|assumeyes\|assumeno\|alwaysprompt\|tolerant\|exactarch\|showdupesfromrepos\|obsoletes\|overwrite_groups\|groupremove_leaf_only\|enable_group_conditionals\|diskspacecheck\|history_record\|plugins\|clean_requirements_on_remove\)\s*=\s*/ nextgroup=yumBool
+syn match   mainKey     contained /^\%(cachedir\|persistdir\|logfile\|installroot\)\s*=\s*/ nextgroup=yumFile,yumError
+syn match   mainKey     contained /^\%(reposdir\)\s*=\s*/ nextgroup=yumFileList
+syn match   mainKey     contained /^\%(debuglevel\|installonly_limit\|recent\|retries\|timeout\)\s*=\s*/ nextgroup=yumInt,yumError
+"keys with special values
+syn match   mainKey     contained /^multilib_policy\s*=\s*/ nextgroup=yumMultilibPolicy,yumError
+syn keyword yumMultilibPolicy   contained all best
+syn match   mainKey     contained /^group_package_types\s*=\s*/ nextgroup=yumGroupTypeList
+syn region  yumGroupTypeList    contained start=/./ end=/\n\S/me=e-2 contains=yumGroupType,yumError
+syn keyword yumGroupType        contained required optional mandatory
+"----------------------------------------------------------
 
-" define coloring
-hi def link yumComment      Comment
-hi def link yumHeader       Type
-hi def link yumVar          PreProc
-hi def link yumKey          Statement
-hi def link yumError        Error
 
-hi def link yumURL          Constant
-hi def link yumInt          Constant
-hi def link yumBool         Constant
-hi def link yumDuration     Constant
-hi def link repoFailover    Constant
+"---- define coloring -------------------------------------
+hi def link yumComment          Comment
+hi def link yumHeader           Type
+hi def link yumVar              PreProc
+hi def link yumKey              Statement
+hi def link yumError            Error
+hi def link yumGlobSyms         Special
+hi def link yumComma            Special
 
-hi def link mainKey         yumKey
-hi def link repoKey         yumKey
+hi def link yumURL              Constant
+hi def link yumInt              Constant
+hi def link yumBool             Constant
+hi def link yumDuration         Constant
+hi def link yumMultilibPolicy   Constant
+hi def link yumGroupType        Constant
+hi def link repoFailover        Constant
+
+hi def link mainKey             yumKey
+hi def link repoKey             yumKey
 
 let b:current_syntax = "yumconf"
