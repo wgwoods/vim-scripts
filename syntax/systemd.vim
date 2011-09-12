@@ -11,6 +11,7 @@ endif
 syn case match
 syntax sync fromstart
 setlocal iskeyword+=-
+setlocal iskeyword+=+
 
 " hilight errors with this
 syn match sdErr contained /\s*\S\+/ nextgroup=sdErr
@@ -102,8 +103,7 @@ syn keyword sdRestartType contained nextgroup=sdErr no on-success on-failure on-
 syn keyword sdNotifyType  contained nextgroup=sdErr none main all
 syn keyword sdMountFlags  contained nextgroup=sdErr shared slave private
 syn keyword sdStdin       contained nextgroup=sdErr null tty-force tty-fail socket tty
-syn match   sdStdout      contained nextgroup=sdErr /\<\%(syslog\|kmsg\)\%(+console\)\=\>/
-syn keyword sdStdout      contained nextgroup=sdErr inherit null tty socket
+syn keyword sdStdout      contained nextgroup=sdErr inherit null tty socket syslog syslog+console kmsg kmsg+console
 syn keyword sdSyslogFacil contained nextgroup=sdErr kern user mail daemon auth syslog lpr news uucp cron authpriv ftp
 syn match   sdSyslogFacil contained nextgroup=sdErr /\<local[0-7]\>/
 syn keyword sdSyslogLevel contained nextgroup=sdErr emerg alert crit err warning notice info debug
