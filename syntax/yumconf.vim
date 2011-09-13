@@ -61,7 +61,7 @@ syn keyword repoFailover    contained priority roundrobin skipwhite nextgroup=yu
 "---- [main] section --------------------------------------
 "TODO: this section isn't complete
 syn region  mainRegion  matchgroup=yumHeader start=/^\[main\]/ end=/^\[/me=e-2 contains=mainKey,yumKey,yumBadLine
-syn match   mainKey     contained /^\%(installonlypkgs\|distroverpkg\|commands\)\s*=\s/ nextgroup=yumList
+syn match   mainKey     contained /^\%(installonlypkgs\|distroverpkg\|commands\)\s*=s*/ nextgroup=yumList
 syn match   mainKey     contained /^\%(keepcache\|protected_multilib\|\%(local_\|repo_\)\=gpgcheck\|skip_broken\|assumeyes\|assumeno\|alwaysprompt\|tolerant\|exactarch\|showdupesfromrepos\|obsoletes\|overwrite_groups\|groupremove_leaf_only\|enable_group_conditionals\|diskspacecheck\|history_record\|plugins\|clean_requirements_on_remove\)\s*=\s*/ nextgroup=yumBool
 syn match   mainKey     contained /^\%(cachedir\|persistdir\|logfile\|installroot\)\s*=\s*/ nextgroup=yumFile,yumError
 syn match   mainKey     contained /^\%(reposdir\)\s*=\s*/ nextgroup=yumFileList
