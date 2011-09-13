@@ -20,61 +20,69 @@ unlet b:current_syntax
 
 syn match   makoError   contained /\S.*/
 syn match   makoComment /^\s*##.*/
-syn region  makoComment matchgroup=makoSpecial start='<%doc>' end='</%doc>'
-syn region  makoPython  matchgroup=makoSpecial start=/<%\_s/ end=/%>/ contains=@Python
-syn region  makoPython  matchgroup=makoSpecial start=/^\s*%\s*\%(if\|elif\|else\|for\|while\)/ end=/$/ contains=@Python
-syn match   makoSpecial /^\s*%\s*\%(endif\|endfor\|endwhile\)\s*/ nextgroup=makoError
-syn region  makoPython  matchgroup=makoVar start=/${/ end=/}/ contains=@Python
+syn region  makoComment matchgroup=makoSpecial  start='<%doc>' end='</%doc>'
+syn region  makoPython  matchgroup=makoSpecial  start=/<%\_s/ end=/%>/ contains=@Python
+syn region  makoPython  matchgroup=makoSpecial  start=/^\s*%\s*\%(if\|elif\|else\|for\|while\)/ end=/$/ contains=@Python
+syn match   makoSpecial /^\s*%\s*\%(endif\|endfor\|endwhile\)\>/ skipwhite nextgroup=makoError
+syn region  makoVar     start=/${/ end=/}/ contains=@Python
+syn region  makoTag     matchgroup=makoSpecial  start=/<%page\>/ end='/>' contains=makoArgs,makoString
+syn keyword makoArgs    args
+syn region  makoString  contained start=/"/ end=/"/
+syn region  makoString  contained start=/'/ end=/'/
 
-syn match   loraxError  contained /\S.*/
-syn match   loraxFile   contained /\S\+/
-syn region  loraxAlt    matchgroup=loraxSpecial start=/{/ end=/}/ keepend
-syn region  loraxQuote  start=/"/ end=/"/ keepend
-syn match   loraxContinue contained /\\$/
+syn match   loraxError      contained /\S.*/
+syn region  loraxQuote      contained start=/"/ end=/"/ contains=makoVar,loraxContinue
+syn region  loraxQuote      contained start=/'/ end=/'/ contains=makoVar,loraxContinue
+syn match   loraxContinue   contained /\\$/
+syn region  loraxAlt        contained matchgroup=makoSpecial start=/{/ end=/}/ contains=makoVar,loraxAltComma
+syn match   loraxAltComma   contained /,/
+syn match   loraxInt        contained /\s\d\+/
+syn match   loraxGlobSyms   contained /[*?]/
+syn cluster loraxArgClust   contains=makoVar,loraxInt,loraxQuote,loraxAlt,loraxContinue
 
-syn keyword loraxKey install copy copyif move moveif hardlink symlink skipwhite nextgroup=loraxTwoFiles
-" TODO
+syn region  loraxArgs       contained start=// end=/$/ contains=@loraxArgClust
+syn region  loraxArgsGlob   contained start=// end=/$/ contains=@loraxArgClust,loraxGlobSyms
 
-syn keyword loraxKey mkdir remove skipwhite nextgroup=loraxManyFiles
-" TODO
+" commands that don't take globs
+syn keyword loraxKey copy copyif move moveif hardlink symlink nextgroup=loraxArgs
+syn keyword loraxKey mkdir append chmod installkernel installinitrd treeinfo nextgroup=loraxArgs
 
-syn keyword loraxKey append skipwhite nextgroup=loraxAppend
-" TODO
+" commands that take globs
+syn keyword loraxKey install installpkg removepkg remove replace runcmd nextgroup=loraxArgsGlob
 
-syn keyword loraxKey installkernel installinitrd skipwhite nextgroup=loraxInstallKern
-" TODO
+" gconfset PATH TYPE VALUE [OUTFILE]
+syn keyword loraxKey gconfset nextgroup=loraxArgs
+"TODO hilighting for TYPE and VALUE?
 
-syn keyword loraxKey chmod skipwhite nextgroup=loraxChmodFile,loraxError
-syn match loraxChmodFile contained /\S\+/ skipwhite nextgroup=loraxOctalMode,loraxError
-syn match loraxOctalMode contained /\o\{3,5}/ nextgroup=loraxError
+" removefrom GLOB [--allbut] GLOB...
+syn keyword loraxKey removefrom nextgroup=loraxRemoveFrom
+syn region  loraxRemoveFrom contained start=// end=/$/ contains=loraxArgsGlob,loraxRemoveFromArgs
+syn match   loraxRemoveFromArgs contained /--allbut\>/
 
-syn keyword loraxKey gconfset skipwhite nextgroup=loraxGconf
-" TODO
+" log MESSAGE
+syn keyword loraxKey log skipwhite nextgroup=loraxLog
+syn match   loraxLog contained /\S\+/ contains=makoVar,loraxQuote,loraxInt skipwhite nextgroup=loraxError
 
-syn keyword loraxKey log skipwhite nextgroup=loraxOneArg
-" TODO
+" run_pkg_transaction
+syn keyword loraxKey run_pkg_transaction nextgroup=loraxError
 
-syn keyword loraxKey removefrom skipwhite nextgroup=loraxRemoveFrom
-" TODO
-
-syn keyword loraxKey run_pkg_transaction skipwhite nextgroup=loraxError
-
-syn keyword loraxKey runcmd skipwhite nextgroup=loraxRuncmd
-syn region  loraxRunCmd contained start=// end=/$/ contains=loraxContinue,loraxQuote
-syn keyword loraxKey replace
-syn keyword loraxKey installpkg removepkg
 
 " define colors
 hi def link makoComment     Comment
 hi def link makoSpecial     Special
 hi def link makoVar         PreProc
 hi def link makoError       Error
+hi def link makoString      String
+hi def link makoArgs        Type
 
 hi def link loraxKey        Statement
-hi def link loraxSpecial    Special
+hi def link loraxAltComma   Special
 hi def link loraxContinue   Special
+hi def link loraxGlobSyms   Special
 hi def link loraxQuote      String
-hi def link loraxOctalMode  Constant
 hi def link loraxError      Error
+hi def link loraxInt        Constant
+
+hi def link loraxLog        String
 
 let b:current_syntax = "ltmpl"
