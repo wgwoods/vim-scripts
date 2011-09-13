@@ -14,7 +14,8 @@ syn sync fromstart
 
 
 "----- basic data types and patterns ----------------------
-syn match   yumError    contained '\S.*'
+syn match   yumError    contained /\S.*/
+syn match   yumBadLine  /^[^=:]\+$/
 syn match   yumVar      /\$\%(basearch\|releasever\|arch\|uuid\|YUM\d\)/
 syn match   yumOtherVar /\$\i\+/
 syn match   yumComment  /^[#;].*$/ containedin=ALL
@@ -30,7 +31,7 @@ syn match   yumGlobSyms contained /[*?]/
 " list items
 syn region  yumFileList contained start=// end=/\n\S/me=e-2 contains=yumComma,yumFile,yumError
 syn region  yumURLList  contained start=// end=/\n\S/me=e-2 contains=yumComma,yumUrl,yumError
-syn region  yumList     contained start=// end=/\n\S/me=e-2 contains=yumComma
+syn region  yumList     contained start=// end=/\n\S/me=e-2 contains=yumComma,yumVar
 syn match   yumComma    contained /,/
 "----------------------------------------------------------
 
@@ -45,8 +46,8 @@ syn match   yumKey      contained /^\%(exclude\)\s*=\s*/ nextgroup=yumList
 
 
 "---- [reponame] section items ----------------------------
-syn region  repoRegion  matchgroup=yumHeader start=/^\[\S\+\]/ end=/^\[/me=e-2 contains=repoKey,yumKey,yumVar
-syn match   repoKey     contained /^name\s*=\s*/
+syn region  repoRegion  matchgroup=yumHeader start=/^\[\S\+\]/ end=/^\[/me=e-2 contains=repoKey,yumKey,yumBadLine
+syn match   repoKey     contained /^name\s*=\s*/ nextgroup=yumList
 syn match   repoKey     contained /^\(repositoryid\)\s*=\s*/ nextgroup=yumItem
 syn match   repoKey     contained /^\%(enabled\|repo_gpgcheck\|enablegroups\|skip_if_unavailable\)\s*=\s*/ nextgroup=yumBool
 syn match   repoKey     contained /^\%(mirrorlist\|gpgcakey\)\s*=\s*/ nextgroup=yumUrl,yumError
@@ -59,16 +60,16 @@ syn keyword repoFailover    contained priority roundrobin skipwhite nextgroup=yu
 
 "---- [main] section --------------------------------------
 "TODO: this section isn't complete
-syn region  mainRegion  matchgroup=yumHeader start=/^\[main\]/ end=/^\[/me=e-2 contains=mainKey,yumKey,yumVar
-syn match   mainKey     contained /^\%(installonlypkgs\|distroverpkg\|commands\)\s*=\s/
+syn region  mainRegion  matchgroup=yumHeader start=/^\[main\]/ end=/^\[/me=e-2 contains=mainKey,yumKey,yumBadLine
+syn match   mainKey     contained /^\%(installonlypkgs\|distroverpkg\|commands\)\s*=\s/ nextgroup=yumList
 syn match   mainKey     contained /^\%(keepcache\|protected_multilib\|\%(local_\|repo_\)\=gpgcheck\|skip_broken\|assumeyes\|assumeno\|alwaysprompt\|tolerant\|exactarch\|showdupesfromrepos\|obsoletes\|overwrite_groups\|groupremove_leaf_only\|enable_group_conditionals\|diskspacecheck\|history_record\|plugins\|clean_requirements_on_remove\)\s*=\s*/ nextgroup=yumBool
 syn match   mainKey     contained /^\%(cachedir\|persistdir\|logfile\|installroot\)\s*=\s*/ nextgroup=yumFile,yumError
 syn match   mainKey     contained /^\%(reposdir\)\s*=\s*/ nextgroup=yumFileList
 syn match   mainKey     contained /^\%(debuglevel\|installonly_limit\|recent\|retries\|timeout\)\s*=\s*/ nextgroup=yumInt,yumError
 "keys with special values
-syn match   mainKey     contained /^multilib_policy\s*=\s*/ nextgroup=yumMultilibPolicy,yumError
+syn match   mainKey             contained /^multilib_policy\s*=\s*/ nextgroup=yumMultilibPolicy,yumError
 syn keyword yumMultilibPolicy   contained all best
-syn match   mainKey     contained /^group_package_types\s*=\s*/ nextgroup=yumGroupTypeList
+syn match   mainKey             contained /^group_package_types\s*=\s*/ nextgroup=yumGroupTypeList
 syn region  yumGroupTypeList    contained start=/./ end=/\n\S/me=e-2 contains=yumGroupType,yumError
 syn keyword yumGroupType        contained required optional mandatory
 "----------------------------------------------------------
@@ -80,6 +81,7 @@ hi def link yumHeader           Type
 hi def link yumVar              PreProc
 hi def link yumKey              Statement
 hi def link yumError            Error
+hi def link yumBadLine          Error
 hi def link yumGlobSyms         Special
 hi def link yumComma            Special
 
