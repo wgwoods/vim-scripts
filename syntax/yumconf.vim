@@ -72,6 +72,15 @@ syn keyword yumMultilibPolicy   contained all best
 syn match   mainKey             contained /^group_package_types\s*=\s*/ nextgroup=yumGroupTypeList
 syn region  yumGroupTypeList    contained start=/./ end=/\n\S/me=e-2 contains=yumGroupType,yumError
 syn keyword yumGroupType        contained required optional mandatory
+syn match   mainKey         contained /^color\s*=\s*/ nextgroup=yumColorMode,yumError
+syn keyword yumColorMode    contained always auto never
+syn match   mainKey         contained /^color_list_installed_\%(older\|newer\|reinstall\|extra\)\s*=s*/ nextgroup=yumColor
+syn match   mainKey         contained /^color_list_available_\%(upgrade\|downgrade\|install\|reinstall\)\s*=s*/ nextgroup=yumColor
+syn match   mainKey         contained /^color_update_\%(local\|remote\|installed\)\s*=s*/ nextgroup=yumColor
+syn match   mainKey         contained /^color_search_match\s*=s*/ nextgroup=yumColor
+syn match   yumColor        contained /.*$/ contains=yumColorWords,yumColorSyms,yumError
+syn keyword yumColorWords   contained bold blink dim reverse underline black red green yellow blue magenta cyan white
+syn match   yumColorSyms    contained /\%(,\|\<fg:\|\<bg:\)/
 "----------------------------------------------------------
 
 
@@ -84,6 +93,7 @@ hi def link yumError            Error
 hi def link yumBadLine          Error
 hi def link yumGlobSyms         Special
 hi def link yumComma            Special
+hi def link yumColorSyms        Special
 
 hi def link yumURL              Constant
 hi def link yumInt              Constant
@@ -92,6 +102,8 @@ hi def link yumDuration         Constant
 hi def link yumMultilibPolicy   Constant
 hi def link yumGroupType        Constant
 hi def link repoFailover        Constant
+hi def link yumColorMode        Constant
+hi def link yumColorWords       Constant
 
 hi def link mainKey             yumKey
 hi def link repoKey             yumKey
