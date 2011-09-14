@@ -59,7 +59,7 @@ syn keyword loraxKey gconfset nextgroup=loraxArgs
 
 " removefrom GLOB [--allbut] GLOB...
 syn keyword loraxKey removefrom nextgroup=loraxRemoveFrom
-syn region  loraxRemoveFrom contained start=// end=/$/ contains=loraxArgsGlob,loraxRemoveFromArgs
+syn region  loraxRemoveFrom     contained start=// end=/$/ contains=@loraxArgClust,loraxGlobSyms,loraxRemoveFromArgs
 syn match   loraxRemoveFromArgs contained /--allbut\>/
 
 " log MESSAGE
@@ -88,6 +88,7 @@ hi def link loraxQuote      String
 hi def link loraxError      Error
 hi def link loraxInt        Constant
 
-hi def link loraxLog        String
+hi def link loraxRemoveFromArgs Special
+hi def link loraxLog            String
 
 let b:current_syntax = "ltmpl"
