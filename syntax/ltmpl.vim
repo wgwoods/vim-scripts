@@ -20,15 +20,18 @@ unlet b:current_syntax
 
 syn match   makoError   contained /\S.*/
 syn match   makoComment /^\s*##.*/
+syn region  makoTag     matchgroup=makoSpecial  start=/<%[A-Za-z0-9_.:]\+/ end=/\/\=>/ contains=makoArgs,makoString,makoVar
+syn keyword makoArgs    contained args name filter file import cached buffered cache_type
 syn region  makoComment matchgroup=makoSpecial  start='<%doc>' end='</%doc>'
-syn region  makoPython  matchgroup=makoSpecial  start=/<%\_s/ end=/%>/ contains=@Python
+syn region  makoText    matchgroup=makoSpecial  start='<%text>' end='</%text>'
+syn region  makoPython  matchgroup=makoSpecial  start=/<%!\=\_s/ end=/%>/ contains=@Python
 syn region  makoPython  matchgroup=makoSpecial  start=/^\s*%\s*\%(if\|elif\|else\|for\|while\)/ end=/$/ contains=@Python
 syn match   makoSpecial /^\s*%\s*\%(endif\|endfor\|endwhile\)\>/ skipwhite nextgroup=makoError
-syn region  makoVar     start=/${/ end=/}/ contains=@Python
-syn region  makoTag     matchgroup=makoSpecial  start=/<%page\>/ end='/>' contains=makoArgs,makoString
-syn keyword makoArgs    args
-syn region  makoString  contained start=/"/ end=/"/
-syn region  makoString  contained start=/'/ end=/'/
+syn region  makoVar         start=/${/ end=/}/ keepend contains=@Python,makoFilter
+syn region  makoFilter      contained matchgroup=makoSpecial start=/|/ end=/}/ contains=makoFilterNames
+syn keyword makoFilterNames contained u x h trim
+syn region  makoString  contained start=/"/ end=/"/ contains=makoVar
+syn region  makoString  contained start=/'/ end=/'/ contains=makoVar
 
 syn match   loraxError      contained /\S.*/
 syn region  loraxQuote      contained start=/"/ end=/"/ contains=makoVar,loraxContinue
@@ -69,10 +72,12 @@ syn keyword loraxKey run_pkg_transaction nextgroup=loraxError
 
 " define colors
 hi def link makoComment     Comment
+hi def link makoText        String
 hi def link makoSpecial     Special
 hi def link makoVar         PreProc
 hi def link makoError       Error
 hi def link makoString      String
+hi def link makoFilterNames Constant
 hi def link makoArgs        Type
 
 hi def link loraxKey        Statement
