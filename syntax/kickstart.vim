@@ -4,11 +4,7 @@
 " Maintainer:  Will Woods <wwoods@redhat.com>
 " Last Change: Wed Mar  9 15:01:02 EST 2011
 
-" For version 5.x: Clear all syntax items
-" For version 6.x: Quit when a syntax file was already loaded
-if version < 600
-  syntax clear
-elseif exists("b:current_syntax")
+if exists("b:current_syntax")
   finish
 endif
 
@@ -65,32 +61,19 @@ syntax sync match ksSync grouphere NONE "^\s*%\(pre\|post\|packages\|traceback\)
 syntax sync match ksSync groupthere NONE "^\s*%end"
 
 " Define the default highlighting.
-" For version 5.7 and earlier: only when not done already
-" For version 5.8 and later: only when an item doesn't have highlighting yet
-if version >= 508 || !exists("did_kickstart_syntax_inits")
-  if version < 508
-    let did_kickstart_syntax_inits = 1
-    command -nargs=+ HiLink hi link <args>
-  else
-    command -nargs=+ HiLink hi def link <args>
-  endif
-  HiLink ksComment              Comment
-  HiLink ksTodo                 Todo
-  HiLink ksCommands             Statement
-  HiLink ksDeprecatedCommands   Special
-  HiLink ksUnknownCommand       Error
-  HiLink ksIncludes             Include
-  HiLink ksSectionMarker        Structure
-  HiLink ksScriptFlag           ksFlag
-  HiLink ksPackagesFlag         ksFlag
-  HiLink ksFlag                 Identifier
-  HiLink ksUnknownFlag          Error
-  HiLink ksPackageMinus         Special
-  HiLink ksPackageGroup         Include
-  HiLink ksPackageGlob          Operator
-  delcommand HiLink
-endif
+hi def link ksComment              Comment
+hi def link ksTodo                 Todo
+hi def link ksCommands             Statement
+hi def link ksDeprecatedCommands   Special
+hi def link ksUnknownCommand       Error
+hi def link ksIncludes             Include
+hi def link ksSectionMarker        Structure
+hi def link ksScriptFlag           ksFlag
+hi def link ksPackagesFlag         ksFlag
+hi def link ksFlag                 Identifier
+hi def link ksUnknownFlag          Error
+hi def link ksPackageMinus         Special
+hi def link ksPackageGroup         Include
+hi def link ksPackageGlob          Operator
 
 let b:current_syntax = "kickstart"
-
-" vim: ts=8

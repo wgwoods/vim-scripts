@@ -4,11 +4,7 @@
 " Maintainer:  Will Woods <wwoods@redhat.com>
 " Last Change: Tue Mar 29 11:38:02 EDT 2011
 
-" For version 5.x: Clear all syntax items
-" For version 6.x: Quit when a syntax file was already loaded
-if version < 600
-  syntax clear
-elseif exists("b:current_syntax")
+if exists("b:current_syntax")
   finish
 endif
 
@@ -99,53 +95,37 @@ syn match specBugID contained '\%([Bb]ug\|\a*[Bb][Zz]\)[ #]*\d\+'
 "####################################
 
 " Define the default highlighting.
-" For version 5.7 and earlier: only when not done already
-" For version 5.8 and later: only when an item doesn't have highlighting yet
-if version >= 508 || !exists("did_spec_syntax_inits")
-  if version < 508
-    let did_spec_syntax_inits = 1
-    command -nargs=+ HiLink hi link <args>
-  else
-    command -nargs=+ HiLink hi def link <args>
-  endif
+hi def link specComment             Comment
+hi def link specTodo                Todo
+hi def link specRPMHeader           Statement
+hi def link specDefine              PreProc
+hi def link specControl             Identifier
+hi def link specMacroCommands       Macro
+hi def link specIdentifier          Identifier
+hi def link specMacroSym            Special
+hi def link specMacroMod            Operator
+hi def link specSectionMarker       Structure
+hi def link specURL                 PreProc
+hi def link specEmail               PreProc
+hi def link specVersion             Constant
+hi def link specBugID               Constant
+hi def link specPRCOOperator        Operator
+hi def link specContinue            Operator
+hi def link specDate                String
+hi def link specLicense             String
 
-  "main types color definitions
-  HiLink specComment			Comment
-  HiLink specTodo                       Todo
-  HiLink specRPMHeader                  Statement
-  HiLink specDefine        		PreProc
-  HiLink specControl    		Identifier
-  HiLink specMacroCommands              Macro
-  HiLink specIdentifier                 Identifier
-  HiLink specMacroSym                   Special
-  HiLink specMacroMod                   Operator
-  HiLink specSectionMarker              Structure
-  HiLink specURL			PreProc
-  HiLink specEmail                      PreProc
-  HiLink specVersion                    Constant
-  HiLink specBugID                      Constant
-  HiLink specPRCOOperator               Operator
-  HiLink specContinue                   Operator
-  HiLink specDate			String
-  HiLink specLicense			String
-
-  "yes, it's ugly, but white is sooo cool
-  if &background == "dark"
-    hi def specMacroNames		ctermfg=white
-  else
-    HiLink specMacroNames		Identifier
-  endif
-
-  "colors mapped onto other things
-  HiLink specRPMHeaderSimple            specRPMHeader
-  HiLink specRPMHeaderVersion           specRPMHeader
-  HiLink specMacroBuiltin               specMacroNames
-  HiLink specWeekday			specDate
-  HiLink specMonth			specDate
-
-  delcommand HiLink
+" yes, it's ugly, but white is sooo cool
+if &background == "dark"
+  hi def specMacroNames             ctermfg=white
+else
+  hi def link specMacroNames        Identifier
 endif
 
-let b:current_syntax = "spec"
+  "colors mapped onto other things
+hi def link specRPMHeaderSimple     specRPMHeader
+hi def link specRPMHeaderVersion    specRPMHeader
+hi def link specMacroBuiltin        specMacroNames
+hi def link specWeekday             specDate
+hi def link specMonth               specDate
 
-" vim: ts=8
+let b:current_syntax = "spec"
