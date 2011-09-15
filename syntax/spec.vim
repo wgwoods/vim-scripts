@@ -18,7 +18,7 @@ syn sync minlines=1000 " kinda dumb but specfiles are never *that* long
 " include sh for the script regions
 let b:is_bash=1
 syntax include @Shell syntax/sh.vim
-unlet b:current_syntax 
+unlet b:current_syntax
 
 " comments
 syn region specComment start=/^\s*#/ end=/$/ contains=specTodo

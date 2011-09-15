@@ -12,7 +12,7 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syntax case match 
+syntax case match
 
 " include other possible scripting languages people might use
 let b:is_bash=1
