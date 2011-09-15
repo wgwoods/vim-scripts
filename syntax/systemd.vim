@@ -21,7 +21,8 @@ syn match sdEnvArg contained /\$\i\+\|\${\i\+}/
 syn match sdFormatStr contained /%[nNpPIfcrRt]/ containedin=ALLBUT,sdComment,sdErr
 
 " common data types
-syn match sdInt      contained nextgroup=sdErr /\d\+/
+syn match sdUInt     contained nextgroup=sdErr /\d\+/
+syn match sdInt      contained nextgroup=sdErr /-\=\d\+/
 syn match sdOctal    contained nextgroup=sdErr /0\o\{3,4}/
 syn match sdDuration contained nextgroup=sdErr /\d\+/
 syn match sdDuration contained nextgroup=sdErr /\%(\d\+\%(s\|min\|h\|d\|w\|ms\|us\)\s*\)\+/
@@ -76,7 +77,7 @@ syn match sdServiceKey contained /^\%(User\|Group\|SupplementaryGroups\|Nice\|OO
 " TODO: Umask is sdOctal
 syn match sdServiceKey contained /^\%(CPUSchedulingResetOnFork\|TTYReset\|TTYVHangup\|TTYVTDisallocate\|SyslogLevelPrefix\|ControlGroupModify\|PrivateTmp\|PrivateNetwork\)=/ nextgroup=sdBool,sdErr
 syn match sdServiceKey contained /^\%(RemainAfterExit\|GuessMainPID\|PermissionsStartOnly\|RootDirectoryStartOnly\|NonBlocking\|ControlGroupModify\)=/ nextgroup=sdBool,sdErr
-syn match sdServiceKey contained /^\%(SysVStartPriority\|FsckPassNo\)=/ nextgroup=sdInt,sdErr
+syn match sdServiceKey contained /^\%(SysVStartPriority\|FsckPassNo\)=/ nextgroup=sdUInt,sdErr
 syn match sdServiceKey contained /^\%(Restart\|Timeout\)Sec=/ nextgroup=sdDuration,sdErr
 syn match sdServiceKey contained /^Limit\%(CPU\|FSIZE\|DATA\|STACK\|CORE\|RSS\|NOFILE\|AS\|NPROC\|MEMLOCK\|LOCKS\|SIGPENDING\|MSGQUEUE\|NICE\|RTPRIO\|RTTIME\)=/ nextgroup=sdRlimit
 syn match sdServiceKey contained /^Sockets=/ nextgroup=sdUnitList
@@ -119,12 +120,12 @@ syn region sdSocketBlock matchgroup=sdHeader start=/^\[Socket\]/ end=/^\[/me=e-2
 syn match sdSocketKey contained /^Listen\%(Stream\|Datagram\|SequentialPacket\|FIFO\|Special\|Netlink\|MessageQueue\)=/
 syn match sdSocketKey contained /^Listen\%(FIFO\|Special\)=/ nextgroup=sdFilename,sdErr
 syn match sdSocketKey contained /^\%(Socket\|Directory\)Mode=/ nextgroup=sdOctal,sdErr
-syn match sdSocketKey contained /^\%(Backlog\|MaxConnections\|Priority\|ReceiveBuffer\|SendBuffer\|IPTTL\|Mark\|PipeSize\|MessageQueueMaxMessages\|MessageQueueMessageSize\)=/ nextgroup=sdInt,sdErr
+syn match sdSocketKey contained /^\%(Backlog\|MaxConnections\|Priority\|ReceiveBuffer\|SendBuffer\|IPTTL\|Mark\|PipeSize\|MessageQueueMaxMessages\|MessageQueueMessageSize\)=/ nextgroup=sdUInt,sdErr
 syn match sdSocketKey contained /^\%(Accept\|KeepAlive\|FreeBind\|Transparent\|Broadcast\)=/ nextgroup=sdBool,sdErr
 syn match sdSocketKey contained /^BindToDevice=/
 syn match sdSocketKey contained /^Service=/ nextgroup=sdUnitList
 syn match sdSocketKey contained /^BindIPv6Only=/ nextgroup=sdBindIPv6,sdErr
-syn match sdSocketKey contained /^IPTOS=/ nextgroup=sdIPTOS,sdInt,sdErr
+syn match sdSocketKey contained /^IPTOS=/ nextgroup=sdIPTOS,sdUInt,sdErr
 syn match sdSocketKey contained /^TCPCongestion=/ nextgroup=sdTCPCongest
 syn keyword sdBindIPv6   contained nextgroup=sdErr default both ipv6-only
 syn keyword sdIPTOS      contained nextgroup=sdErr low-delay throughput reliability low-cost
@@ -147,7 +148,7 @@ syn match sdMountKey contained /^\%(What\|Type\|Options\)=/
 " [Swap]
 syn region sdSwapBlock matchgroup=sdHeader start=/^\[Swap\]/ end=/^\[/me=e-2 contains=sdSwapKey,sdKillKey
 syn match sdSwapKey contained /^What=/ nextgroup=sdFilename,sdErr
-syn match sdSwapKey contained /^Priority=/ nextgroup=sdInt,sdErr
+syn match sdSwapKey contained /^Priority=/ nextgroup=sdUInt,sdErr
 
 " [Path]
 syn region sdPathBlock matchgroup=sdHeader start=/^\[Path\]/ end=/^\[/me=e-2 contains=sdPathKey
@@ -171,9 +172,7 @@ hi def link sdValue         Constant
 hi def link sdSymbol        Special
 
 " It'd be nice if this worked..
-"syn match sdSymbol /.\+/ contained containedin=sd.\+Flag
-"syn match sdKey    /.\+/ contained containedin=sd.\+Key
-
+"hi def link sd.\+Key           sdKey
 hi def link sdUnitKey           sdKey
 hi def link sdInstallKey        sdKey
 hi def link sdExecKey           sdKey
@@ -187,29 +186,30 @@ hi def link sdAutomountKey      sdKey
 hi def link sdSwapKey           sdKey
 hi def link sdPathKey           sdKey
 
-hi def link sdInt           sdValue
-hi def link sdBool          sdValue
-hi def link sdOctal         sdValue
-hi def link sdDuration      sdValue
-hi def link sdVirtType      sdValue
-hi def link sdServiceType   sdValue
-hi def link sdNotifyType    sdValue
-hi def link sdSecurityType  sdValue
-hi def link sdSecureBits    sdValue
-hi def link sdMountFlags    sdValue
-hi def link sdKillMode      sdValue
-hi def link sdRestartType   sdValue
-hi def link sdSignal        sdValue
-hi def link sdStdin         sdValue
-hi def link sdStdout        sdValue
-hi def link sdSyslogFacil   sdValue
-hi def link sdSyslogLevel   sdValue
-hi def link sdIOSched       sdValue
-hi def link sdCPUSched      sdValue
-hi def link sdRlimit        sdValue
+hi def link sdInt               sdValue
+hi def link sdUInt              sdValue
+hi def link sdBool              sdValue
+hi def link sdOctal             sdValue
+hi def link sdDuration          sdValue
+hi def link sdVirtType          sdValue
+hi def link sdServiceType       sdValue
+hi def link sdNotifyType        sdValue
+hi def link sdSecurityType      sdValue
+hi def link sdSecureBits        sdValue
+hi def link sdMountFlags        sdValue
+hi def link sdKillMode          sdValue
+hi def link sdRestartType       sdValue
+hi def link sdSignal            sdValue
+hi def link sdStdin             sdValue
+hi def link sdStdout            sdValue
+hi def link sdSyslogFacil       sdValue
+hi def link sdSyslogLevel       sdValue
+hi def link sdIOSched           sdValue
+hi def link sdCPUSched          sdValue
+hi def link sdRlimit            sdValue
 
-hi def link sdExecFlag      sdSymbol
-hi def link sdConditionFlag sdSymbol
-hi def link sdEnvDashFlag   sdSymbol
+hi def link sdExecFlag          sdSymbol
+hi def link sdConditionFlag     sdSymbol
+hi def link sdEnvDashFlag       sdSymbol
 
 let b:current_syntax = "systemd"
