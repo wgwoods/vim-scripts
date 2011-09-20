@@ -27,7 +27,7 @@ syn match sdOctal    contained nextgroup=sdErr /0\o\{3,4}/
 syn match sdDuration contained nextgroup=sdErr /\d\+/
 syn match sdDuration contained nextgroup=sdErr /\%(\d\+\%(s\|min\|h\|d\|w\|ms\|us\)\s*\)\+/
 syn match sdDatasize contained nextgroup=sdErr /\d\+[KMGT]/
-syn match sdFilename contained nextgroup=sdErr /\/\S\+/
+syn match sdFilename contained nextgroup=sdErr /\/\S*/
 syn keyword sdBool   contained nextgroup=sdErr 1 yes true on 0 no false off
 syn match sdUnitName contained /\S\+\.\(automount\|mount\|swap\|socket\|service\|target\|path\|timer\|device\)\_s/
 
