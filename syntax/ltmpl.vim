@@ -20,7 +20,7 @@ unlet b:current_syntax
 
 syn match   makoError   contained /\S.*/
 syn match   makoComment /^\s*##.*/
-syn region  makoTag     matchgroup=makoSpecial  start=/<%[A-Za-z0-9_.:]\+/ end=/\/\=>/ contains=makoArgs,makoString,makoVar
+syn region  makoTag     matchgroup=makoSpecial  start=/<\/\=%[A-Za-z0-9_.:]\+/ end=/\/\=>/ contains=makoArgs,makoString,makoVar
 syn keyword makoArgs    contained args name filter file import cached buffered cache_type
 syn region  makoComment matchgroup=makoSpecial  start='<%doc>' end='</%doc>'
 syn region  makoText    matchgroup=makoSpecial  start='<%text>' end='</%text>'
@@ -46,8 +46,11 @@ syn cluster loraxArgClust   contains=makoVar,loraxInt,loraxQuote,loraxAlt,loraxC
 syn region  loraxArgs       contained start=// end=/$/ contains=@loraxArgClust
 syn region  loraxArgsGlob   contained start=// end=/$/ contains=@loraxArgClust,loraxGlobSyms
 
+" match a '-' prefix on a command. (this is kind of a weak rule)
+syn match loraxCmdSyms /^\s*-/
+
 " commands that don't take globs
-syn keyword loraxKey copy copyif move moveif hardlink symlink nextgroup=loraxArgs
+syn keyword loraxKey copy move hardlink symlink nextgroup=loraxArgs
 syn keyword loraxKey mkdir append chmod installkernel installinitrd treeinfo nextgroup=loraxArgs
 
 " commands that take globs
@@ -70,6 +73,7 @@ syn match   loraxLog contained /\S\+/ contains=makoVar,loraxQuote,loraxInt skipw
 syn keyword loraxKey run_pkg_transaction nextgroup=loraxError
 
 
+
 " define colors
 hi def link makoComment     Comment
 hi def link makoText        String
@@ -77,13 +81,15 @@ hi def link makoSpecial     Special
 hi def link makoVar         PreProc
 hi def link makoError       Error
 hi def link makoString      String
-hi def link makoFilterNames Constant
+hi def link makoFilter      Constant
+hi def link makoFilterNames Statement
 hi def link makoArgs        Type
 
 hi def link loraxKey        Statement
 hi def link loraxAltComma   Special
 hi def link loraxContinue   Special
 hi def link loraxGlobSyms   Special
+hi def link loraxCmdSyms    Special
 hi def link loraxQuote      String
 hi def link loraxError      Error
 hi def link loraxInt        Constant
