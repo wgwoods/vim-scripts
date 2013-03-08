@@ -15,6 +15,9 @@ syn sync minlines=1000 " kinda dumb but specfiles are never *that* long
 let b:is_bash=1
 syntax include @Shell syntax/sh.vim
 unlet b:current_syntax
+" and lua for those special places where we use the embedded lua interpreter
+syntax include @Lua syntax/lua.vim
+unlet b:current_syntax
 
 " comments
 syn region specComment start=/^\s*#/ end=/$/ contains=specTodo
@@ -63,9 +66,17 @@ syn match specCondition '.*$' contained contains=specMacro,specVersion,specConti
 syn match specControl '^%\%(else\|endif\)\>'
 
 " section markers
-syn match specSectionMarker '^%\%(description\|files\|package\|prep\|build\|install\|clean\|pre\|post\|preun\|postun\|posttrans\|changelog\)\>'
-" shell sections
-syn region specSectionShell matchgroup=specSectionMarker start='^%\%(prep\|build\|install\|clean\|preun\|postun\|posttrans\|pre\|post\|changelog\)' end='^%\%(description\|files\|package\|prep\|build\|install\|clean\|preun\|postun\|posttrans\|pre\|post\|changelog\)\>'me=s-1 contains=specMacro,specMacroNames,specControl,specDefine,specMacroCommands,@Shell
+" build sections
+syn match specSectionMarker '^%\%(prep\|build\|install\|check\|clean\)\>'
+" metadata sections
+syn match specSectionMarker '^%\%(package\|changelog\|description\|files\|policies\)\>'
+" scriptlet sections
+syn match specSectionMarker '^%\%(\%(pre\|post\)\%(un\|trans\)\?\|verifyscript\|trigger\%(in\|un\|prein\|postun\)\?\)'
+
+" scriptlet + build sections are shell..
+syn region specSectionShell matchgroup=specSectionMarker start='^%\%(prep\|build\|install\|check\|clean\|\%(pre\|post\)\%(un\|trans\)\?\|verifyscript\|trigger\%(in\|un\|prein\|postun\)\?\)' end='^%\%(prep\|build\|install\|check\|cleanpackage\|changelog\|description\|files\|policies\|\%(pre\|post\)\%(un\|trans\)\?\|verifyscript\|trigger\%(in\|un\|prein\|postun\)\?\)\>'me=s-1 contains=specMacro,specMacroNames,specControl,specDefine,specMacroCommands,@Shell
+" unless we request a different interpreter..
+syn region specSectionShell matchgroup=specSectionMarker start='^%\%(prep\|build\|install\|check\|clean\|\%(pre\|post\)\%(un\|trans\)\?\|verifyscript\|trigger\%(in\|un\|prein\|postun\)\?\).*\s-p\s*<lua>' end='^%\%(prep\|build\|install\|check\|cleanpackage\|changelog\|description\|files\|policies\|\%(pre\|post\)\%(un\|trans\)\?\|verifyscript\|trigger\%(in\|un\|prein\|postun\)\?\)\>'me=s-1 contains=specMacro,specMacroNames,specControl,specDefine,specMacroCommands,@Lua
 " changelog section
 syn region specChangeLog matchgroup=specSectionMarker start='^%changelog\>' end='^%' contains=specChangelogHeader,specURL,specBugID
 
