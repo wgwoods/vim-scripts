@@ -50,6 +50,8 @@ syn match sdUnitKey contained /^Condition\(PathExists\|PathExistsGlob\|PathIsDir
 syn match sdUnitKey contained /^ConditionVirtualization=|\=!\=/ contains=sdConditionFlag nextgroup=sdVirtType,sdErr
 syn match sdUnitKey contained /^ConditionSecurity=|\=!\=/ contains=sdConditionFlag nextgroup=sdSecurityType,sdErr
 syn match sdUnitKey contained /^ConditionKernelCommandLine=|\=!\=/ contains=sdConditionFlag
+syn match sdUnitKey contained /^ConditionCapability=|\=!\=/ contains=sdConditionFlag nextgroup=sdAnyCapName,sdErr
+syn match sdUnitKey contained /^ConditionACPower=|\=/ contains=sdConditionFlag nextgroup=sdBool,sdErr
 syn match sdUnitKey contained /^ConditionNull=|\=/ contains=sdConditionFlag nextgroup=sdBool,sdErr
 syn match sdUnitList       contained /.*/ contains=sdUnitName,sdErr
 syn match sdConditionFlag  contained /[!|]/
