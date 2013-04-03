@@ -52,7 +52,7 @@ syn match sdUnitKey contained /^ConditionSecurity=|\=!\=/ contains=sdConditionFl
 syn match sdUnitKey contained /^Condition\(KernelCommandLine\|Null\)=|\=!\=/ contains=sdConditionFlag
 syn match sdUnitList       contained /.*/ contains=sdUnitName,sdErr
 syn match sdConditionFlag  contained /[!|]/
-syn keyword sdVirtType     contained nextgroup=sdErr qemu kvm vmware microsoft oracle xen pidns openvz
+syn keyword sdVirtType     contained nextgroup=sdErr vm container qemu kvm vmware microsoft oracle xen bochs chroot openvz lxc lxc-libvirt systemd-nspawn
 syn keyword sdSecurityType contained nextgroup=sdErr selinux
 syn match sdDocUri         contained /\%(https\=:\/\/\|file:\|info:\|man:\)\S\+\s*/ nextgroup=sdDocUri,sdErr
 
