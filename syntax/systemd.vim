@@ -49,7 +49,7 @@ syn match sdUnitKey contained /^JobTimeoutSec=/ nextgroup=sdDuration,sdErr
 syn match sdUnitKey contained /^Condition\(PathExists\|PathExistsGlob\|PathIsDirectory\|PathIsMountPoint\|PathIsReadWrite\|PathIsSymbolicLink\|DirectoryNotEmpty\|FileNotEmpty\|FileIsExecutable\)=|\=!\=/ contains=sdConditionFlag nextgroup=sdFilename,sdErr
 syn match sdUnitKey contained /^ConditionVirtualization=|\=!\=/ contains=sdConditionFlag nextgroup=sdVirtType,sdErr
 syn match sdUnitKey contained /^ConditionSecurity=|\=!\=/ contains=sdConditionFlag nextgroup=sdSecurityType,sdErr
-syn match sdUnitKey contained /^ConditionKernelCommandLine=|\=!\=/ contains=sdConditionFlag
+syn match sdUnitKey contained /^Condition\%(KernelCommandLine\|Host\)=|\=!\=/ contains=sdConditionFlag
 syn match sdUnitKey contained /^ConditionCapability=|\=!\=/ contains=sdConditionFlag nextgroup=sdAnyCapName,sdErr
 syn match sdUnitKey contained /^ConditionACPower=|\=/ contains=sdConditionFlag nextgroup=sdBool,sdErr
 syn match sdUnitKey contained /^ConditionNull=|\=/ contains=sdConditionFlag nextgroup=sdBool,sdErr
