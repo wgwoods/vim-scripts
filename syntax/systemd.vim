@@ -158,7 +158,7 @@ syn match sdServiceKey contained /^PIDFile=/ nextgroup=sdFilename,sdErr
 syn match sdServiceKey contained /^Type=/ nextgroup=sdServiceType,sdErr
 syn match sdServiceKey contained /^Restart=/ nextgroup=sdRestartType,sdErr
 syn match sdServiceKey contained /^NotifyAccess=/ nextgroup=sdNotifyType,sdErr
-syn keyword sdServiceType contained nextgroup=sdErr simple forking dbus oneshot notify
+syn keyword sdServiceType contained nextgroup=sdErr simple forking dbus oneshot notify idle
 syn keyword sdRestartType contained nextgroup=sdErr no on-success on-failure on-abort always
 syn keyword sdNotifyType  contained nextgroup=sdErr none main all
 
