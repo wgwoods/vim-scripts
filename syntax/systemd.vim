@@ -42,6 +42,7 @@ syn keyword sdTodo contained TODO XXX FIXME NOTE
 " see systemd.unit(5)
 syn region sdUnitBlock matchgroup=sdHeader start=/^\[Unit\]/ end=/^\[/me=e-2 contains=sdUnitKey
 syn match sdUnitKey contained /^Description=/
+syn match sdUnitKey contained /^Documentation=/ nextgroup=sdDocURI
 syn match sdUnitKey contained /^\%(Requires\|RequiresOverridable\|Requisite\|RequisiteOverridable\|Wants\|BindTo\|Conflicts\|Before\|After\|OnFailure\|Names\)=/ nextgroup=sdUnitList
 syn match sdUnitKey contained /^\%(OnFailureIsolate\|IgnoreOnIsolate\|IgnoreOnSnapshot\|StopWhenUnneeded\|RefuseManualStart\|RefuseManualStop\|AllowIsolate\|DefaultDependencies\)=/ nextgroup=sdBool,sdErr
 syn match sdUnitKey contained /^JobTimeoutSec=/ nextgroup=sdDuration,sdErr
@@ -53,6 +54,7 @@ syn match sdUnitList       contained /.*/ contains=sdUnitName,sdErr
 syn match sdConditionFlag  contained /[!|]/
 syn keyword sdVirtType     contained nextgroup=sdErr qemu kvm vmware microsoft oracle xen pidns openvz
 syn keyword sdSecurityType contained nextgroup=sdErr selinux
+syn match sdDocUri         contained /\%(https\=:\/\/\|file:\|info:\|man:\)\S\+\s*/ nextgroup=sdDocUri,sdErr
 
 " [Install] {{{1
 " see systemd.unit(5)
