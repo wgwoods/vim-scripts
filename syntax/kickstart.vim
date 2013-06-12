@@ -23,7 +23,7 @@ syntax region ksComment start=/#/ end=/$/ contains=ksTodo
 syntax keyword ksTodo contained FIXME NOTE TODO NOTES XXX
 
 " commands
-syntax keyword ksCommands contained auth autoconfig autopart autostep bootloader btrfs clearpart cmdline device dmraid driverdisk fcoe firewall firstboot graphical group halt harddrive ignoredisk install iscsi iscsiname key keyboard lang logging logvol mediacheck multipath network nfs part partition poweroff raid reboot repo rescue rootpw selinux services shutdown skipx sshpw text timezone updates upgrade url user vnc volgroup xconfig zerombr zfcp
+syntax keyword ksCommands contained auth authconfig autopart autostep bootloader btrfs clearpart cmdline device dmraid driverdisk fcoe firewall firstboot graphical group halt harddrive ignoredisk install iscsi iscsiname key keyboard lang logging logvol mediacheck multipath network nfs part partition poweroff raid reboot repo rescue rootpw selinux services shutdown skipx sshpw text timezone updates upgrade url user vnc volgroup xconfig zerombr zfcp
 syntax keyword ksDeprecatedCommands contained mouse langsupport interactive monitor
 
 " only match commands at the start of a new line
