@@ -60,6 +60,10 @@ syn keyword loraxKey install installpkg removepkg remove replace runcmd nextgrou
 syn keyword loraxKey gconfset nextgroup=loraxArgs
 "TODO hilighting for TYPE and VALUE?
 
+" systemctl [enable|disable|mask] UNIT [UNIT...]
+syn keyword loraxKey systemctl nextgroup=loraxSystemctlCmd
+syn keyword loraxKey enable disable mask nextgroup=loraxArgs
+
 " removefrom GLOB [--allbut] GLOB...
 syn keyword loraxKey removefrom nextgroup=loraxRemoveFrom
 syn region  loraxRemoveFrom     contained start=// end=/$/ contains=@loraxArgClust,loraxGlobSyms,loraxRemoveFromArgs
